@@ -85,8 +85,42 @@ public class Prospector : MonoBehaviour {
 			cp.SetSortingLayerName(tSD.layerName);
 			tableau.Add(cp);
 		}
+		foreach (CardProspector tCP in tableau)
+		{
+			foreach(int hid in tCP.SlotDef.hiddenBy)
+			{
+				cp = FindCardByLayoutID(hid);
+				tCP.hiddenBy.Add(cp);
+			}
+		}
 		MoveToTarget(Draw());
 		UpdateDrawPile();
+	}
+	CardProspector FindCardByLayoutID(int layoutID)
+	{
+		foreach (CardProspector tCP in tableau)
+		{
+			if (tCP.layoutID == layoutID)
+			{
+				return (tCP);
+			}
+		}
+		return (null);
+	}
+	void SetTableauFaces()
+	{
+		foreach(CardProspector cd in tableau)
+		{
+			bool faceUp = true;
+			foreach(CardProspector cover in cd.hiddenBy)
+			{
+				if (cover.state == eCardStates.tableau)
+				{
+					faceUp = false;
+				}
+			}
+			cd.faceUp = faceUp;
+		}
 	}
 	void MoveToDiscard(CardProspector cd)
 	{
@@ -136,8 +170,60 @@ public class Prospector : MonoBehaviour {
 				UpdateDrawPile();
 				break;
 			case eCardStates.tableau:
+				bool validMatch = true;
+				if (!cd.faceUp)
+				{
+					validMatch = false;
+				}
+				if (!AdjacentRank (cd, target))
+				{
+					validMatch = false;
+				}
+				if (!validMatch) return;
+				tableau.Remove(cd);
+				MoveToTarget(cd);
+				SetTableauFaces();
 				break;
 		}
+		CheckForGameOver();
+	}
+	void CheckForGameOver()
+	{
+		if (tableau.Count == 0)
+		{
+			CheckForGameOver(true);
+			return;
+		}
+		foreach (CardProspector cd in tableau)
+		{
+			if (AdjacentRank(cd, target))
+			{
+				return;
+			}
+		}
+		CheckForGameOver(false);
+	}
+	void GameOver(bool won)
+	{
+		if (won)
+		{
+			print("Game Over. You Won! :)");
+		} else
+		{
+			print("Game Over. You Lost. :(");
+		}
+		SceneManager.LoadScene("_Prospector_Scene_0");
+	}
+	public bool AdjacentRank(CardProspector c0, CardProspector c1)
+	{
+		if (!c0.faceUp || !c1.faceUp) return (false);
+		if (Mathf.Abs(c0.rank - c1.rank) == 1)
+		{
+			return (true);
+		}
+		if (c0.rank == 1 && c1.rank == 13) return (true);
+		if (c0.rank == 13 && c1.rank == 1) return (true);
+		return (false);
 	}
 
 }
