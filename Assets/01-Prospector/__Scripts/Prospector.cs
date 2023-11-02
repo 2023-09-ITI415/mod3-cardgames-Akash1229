@@ -19,7 +19,7 @@ public class Prospector : MonoBehaviour {
 	public Vector2 fsPosRun = new Vector2(0.05f, 0.75f);
 	public Vector2 fsPosMid2 = new Vector2(0.4f, 1.0f);
 	public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
-	public float reloadDelay = 1f;
+	public float reloadDelay = 2f;
 	public Text gameOverText, roundResultText, highScoreText;
 	
 
@@ -72,7 +72,7 @@ public class Prospector : MonoBehaviour {
 	{
 		Scoreboard.S.score = ScoreManager.SCORE;
 
-		deck = GetComponent<Deck> ();
+		deck = GetComponent<Deck>();
 		deck.InitDeck (deckXML.text);
 		Deck.Shuffle(ref deck.cards);
 
@@ -86,6 +86,7 @@ public class Prospector : MonoBehaviour {
 		layout.ReadLayout(layoutXML.text);
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
 		LayoutGame();
+
 	}
 	List<CardProspector> ConvertListCardsToListCardProspectors(List<Card> lCD)
 	{
@@ -209,7 +210,9 @@ public class Prospector : MonoBehaviour {
 				MoveToTarget(Draw());
 				UpdateDrawPile();
 				ScoreManager.EVENT(eScoreEvent.draw);
-				break;
+                FloatingScoreHandler(eScoreEvent.draw);
+
+                break;
 			case eCardStates.tableau:
 				bool validMatch = true;
 				if (!cd.faceUp)
@@ -225,7 +228,7 @@ public class Prospector : MonoBehaviour {
 				MoveToTarget(cd);
 				SetTableauFaces();
 				ScoreManager.EVENT(eScoreEvent.mine);
-				FloatingScoreHandler(eScoreEvent.draw);
+				FloatingScoreHandler(eScoreEvent.mine);
 				break;
 		}
 		CheckForGameOver();
@@ -249,6 +252,7 @@ public class Prospector : MonoBehaviour {
 			}
 		}
 		GameOver(false);
+		return;
 	}
 	void GameOver(bool won)
 	{

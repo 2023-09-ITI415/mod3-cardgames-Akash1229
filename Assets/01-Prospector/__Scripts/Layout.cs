@@ -7,7 +7,7 @@ public class SlotDef
 {
     public float x;
     public float y;
-    public bool faceUp = false;
+    public bool faceUp = true;
     public string layerName = "Default";
     public int layerID = 0;
     public int id;
@@ -37,9 +37,9 @@ public class Layout : MonoBehaviour
 
         SlotDef tSD;
 
-        PT_XMLHashList slotsX = xml["slots"];
+        PT_XMLHashList slotsX = xml["slot"];
 
-        for (int i = 0; i < slotsX.Count; i++)
+        for (int i = 0; i <slotsX.Count; i++)
         {
             tSD = new SlotDef();
             if (slotsX[i].HasAtt("type"))
@@ -53,7 +53,9 @@ public class Layout : MonoBehaviour
             tSD.x = float.Parse(slotsX[i].att("x"));
             tSD.y = float.Parse(slotsX[i].att("y"));
             tSD.layerID = int.Parse(slotsX[i].att("layer"));
+
             tSD.layerName = sortingLayerNames[tSD.layerID];
+            
             switch (tSD.type)
             {
                 case "slot":
