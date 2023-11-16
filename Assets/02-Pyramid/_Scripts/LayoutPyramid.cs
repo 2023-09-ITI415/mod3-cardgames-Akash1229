@@ -15,7 +15,7 @@ public class SlotDef
     public string type = "slot";
     public Vector2 stagger;
 }
-public class Layout : MonoBehaviour
+public class LayoutPyramid : MonoBehaviour
 {
     public PT_XMLReader xmlr;
     public PT_XMLHashtable xml;
@@ -24,7 +24,7 @@ public class Layout : MonoBehaviour
     public List<SlotDef> slotDefs;
     public SlotDef drawPile;
     public SlotDef discardPile;
-    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Discard", "Draw" };
+    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw" };
 
     public void ReadLayout(string xmlText)
     {
@@ -39,47 +39,33 @@ public class Layout : MonoBehaviour
 
         PT_XMLHashList slotsX = xml["slot"];
 
+        int numRows = 7; //number of rows in the pyramid
+
         for (int i = 0; i <slotsX.Count; i++)
         {
-            tSD = new SlotDef();
-            if (slotsX[i].HasAtt("type"))
+            int numCards = numRows - row; // Number of cards in the current row
+            for (int col = 0; col < numCards; col++)
             {
-                tSD.type = slotsX[i].att("type");
-            }
-            else
-            {
+                SlotDef tSD = new SlotDef();
                 tSD.type = "slot";
-            }
-            tSD.x = float.Parse(slotsX[i].att("x"));
-            tSD.y = float.Parse(slotsX[i].att("y"));
-            tSD.layerID = int.Parse(slotsX[i].att("layer"));
+                tSD.x = multiplier.x * (col - numCards / 2f);
+                tSD.y = multiplier.y * -row;
+                tSD.layerID = row;
+                tSD.layerName = sortingLayerNames[tSD.layerID];
+                tSD.faceUp = true; // All cards are face up except Discard and Draw
 
-            tSD.layerName = sortingLayerNames[tSD.layerID];
-            
-            switch (tSD.type)
-            {
-                case "slot":
-                    tSD.faceUp = (slotsX[i].att("faceup") == "1");
-                    tSD.id = int.Parse(slotsX[i].att("id"));
-                    if (slotsX[i].HasAtt("hiddenby"))
-                    {
-                        string[] hiding = slotsX[i].att("hiddenby").Split(',');
-                        foreach(string s in hiding)
-                        {
-                            tSD.hiddenBy.Add(int.Parse(s));
-                        }
-                    }
-                    slotDefs.Add(tSD);
-                    break;
-
-                case "drawpile":
-                    tSD.stagger.x = float.Parse(slotsX[i].att("xstagger"));
-                    drawPile = tSD;
-                    break;
-                case "discardpile":
-                    discardPile = tSD;
-                    break;
+                // Set other slot properties as needed
+                tSD.id = row * numRows + col;
+                slotDefs.Add(tSD);
             }
         }
+
+        // Set the draw pile and discard pile definitions
+        drawPile = new SlotDef();
+        drawPile.type = "drawpile";
+        drawPile.stagger.x = 0.5f; // Adjust as needed
+        discardPile = new SlotDef();
+        discardPile.type = "discardpile";
     }
 }
+
