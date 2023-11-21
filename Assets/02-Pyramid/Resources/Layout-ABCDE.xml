@@ -60,5 +60,7 @@
 	<!-- This positions the discard pile and target card -->
 	<slot type="discardpile" x="6" y="1" layer="5"/>
 	
+	<!-- This positions the match pile and saves the match cards-->
+	<slot type="matchpile" x="9" y="-4" layer="0"/>
 </xml>
 	

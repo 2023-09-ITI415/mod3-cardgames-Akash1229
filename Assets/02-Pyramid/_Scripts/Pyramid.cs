@@ -5,9 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class Prospector : MonoBehaviour {
+public class Pyramid : MonoBehaviour {
 
-	static public Prospector 	S;
+	static public Pyramid 	S;
 
 	[Header("Set in Inspector")]
 	public TextAsset			deckXML;
@@ -224,6 +224,15 @@ public class Prospector : MonoBehaviour {
 					validMatch = false;
 				}
 				if (!validMatch) return;
+
+                if (cd.rank == 13)
+                {
+                    MoveToDiscard(cd);
+                    UpdateDrawPile();
+                    tableau.Remove(cd);
+                    MoveToTarget(cd);
+                    SetTableauFaces();
+                }
                 tableau.Remove(cd);
 				MoveToTarget(cd);
 				SetTableauFaces();
