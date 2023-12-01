@@ -7,7 +7,8 @@ public enum eCardStates
     drawpile,
     tableau,
     target,
-    discard
+    discard,
+    matchpile
 }
 public class CardProspector : Card
 {

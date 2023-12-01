@@ -29,7 +29,8 @@ namespace Pyramidscripts
         public List<SlotDef> slotDefs;
         public SlotDef drawPile;
         public SlotDef discardPile;
-        public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw" };
+        public SlotDef matchPile;
+        public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw", "Match" };
 
         public void ReadLayout(string xmlText)
         {
@@ -83,6 +84,9 @@ namespace Pyramidscripts
                         break;
                     case "discardpile":
                         discardPile = tSD;
+                        break;
+                    case "matchpile":
+                        matchPile = tSD;
                         break;
                 }
             }

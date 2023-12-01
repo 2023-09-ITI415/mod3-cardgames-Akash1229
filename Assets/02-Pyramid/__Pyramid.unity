@@ -745,6 +745,7 @@ MonoBehaviour:
   - Row6
   - Discard
   - Draw
+  - Match
 --- !u!1 &850167109
 GameObject:
   m_ObjectHideFlags: 0

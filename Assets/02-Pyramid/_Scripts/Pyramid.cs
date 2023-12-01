@@ -32,6 +32,7 @@ public class Pyramid : MonoBehaviour {
 	public CardProspector target;
 	public List<CardProspector> tableau;
 	public List<CardProspector> discardPile;
+	public List<CardProspector> matchPile;
 	public FloatingScore fsRun;
 
     void Awake()
@@ -76,13 +77,14 @@ public class Pyramid : MonoBehaviour {
 		deck.InitDeck (deckXML.text);
 		Deck.Shuffle(ref deck.cards);
 
-		//Card c;
-		//for (int cNum = 0; cNum < deck.cards.Count; cNum++)
-		//{
-		//	c = deck.cards[cNum];
-		//	c.transform.localPosition = new Vector3((cNum % 13) * 3, cNum / 13 * 4, 0);
-		//}
-		layout = GetComponent<Layout>();
+        //Card c;
+        //for (int cNum = 0; cNum < deck.cards.Count; cNum++)
+        //{
+        //	c = deck.cards[cNum];
+        //	c.transform.localPosition = new Vector3((cNum % 13) * 3, cNum / 13 * 4, 0);
+        //}
+        matchPile = new List<CardProspector>();
+        layout = GetComponent<Layout>();
 		layout.ReadLayout(layoutXML.text);
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
 		LayoutGame();
@@ -225,22 +227,35 @@ public class Pyramid : MonoBehaviour {
 				}
 				if (!validMatch) return;
 
-                if (cd.rank == 13)
+                if (cd.rank + target.rank == 13)
                 {
-                    MoveToDiscard(cd);
-                    UpdateDrawPile();
+                    MoveToMatchPile(cd);
+                    MoveToMatchPile(target);
+                    tableau.Remove(cd);
+                    tableau.Remove(target);
+                    SetTableauFaces();
+                }
+				else
+				{
                     tableau.Remove(cd);
                     MoveToTarget(cd);
                     SetTableauFaces();
+                    ScoreManager.EVENT(eScoreEvent.mine);
+                    FloatingScoreHandler(eScoreEvent.mine);
                 }
-                tableau.Remove(cd);
-				MoveToTarget(cd);
-				SetTableauFaces();
-				ScoreManager.EVENT(eScoreEvent.mine);
-				FloatingScoreHandler(eScoreEvent.mine);
 				break;
 		}
 		CheckForGameOver();
+	}
+	void MoveToMatchPile(CardProspector cd)
+	{
+		cd.state = eCardStates.matchpile;
+		matchPile.Add(cd);
+		cd.transform.parent = layoutAnchor;
+		cd.transform.localPosition = new Vector3(layout.multiplier.x * layout.matchPile.x, layout.multiplier.y * layout.matchPile.y, -layout.matchPile.layerID + 0.5f * matchPile.Count);
+		cd.faceUp = true;
+		cd.SetSortingLayerName(layout.matchPile.layerName);
+		cd.SetSortingOrder(-100 + matchPile.Count);
 	}
 	void CheckForGameOver()
 	{

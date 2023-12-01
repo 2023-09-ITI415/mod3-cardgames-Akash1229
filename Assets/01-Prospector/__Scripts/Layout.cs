@@ -24,7 +24,8 @@ public class Layout : MonoBehaviour
     public List<SlotDef> slotDefs;
     public SlotDef drawPile;
     public SlotDef discardPile;
-    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw" };
+    public SlotDef matchPile;
+    public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw", "Match" };
 
     public void ReadLayout(string xmlText)
     {
@@ -39,7 +40,7 @@ public class Layout : MonoBehaviour
 
         PT_XMLHashList slotsX = xml["slot"];
 
-        for (int i = 0; i <slotsX.Count; i++)
+        for (int i = 0; i < slotsX.Count; i++)
         {
             tSD = new SlotDef();
             if (slotsX[i].HasAtt("type"))
@@ -55,7 +56,7 @@ public class Layout : MonoBehaviour
             tSD.layerID = int.Parse(slotsX[i].att("layer"));
 
             tSD.layerName = sortingLayerNames[tSD.layerID];
-            
+
             switch (tSD.type)
             {
                 case "slot":
@@ -64,7 +65,7 @@ public class Layout : MonoBehaviour
                     if (slotsX[i].HasAtt("hiddenby"))
                     {
                         string[] hiding = slotsX[i].att("hiddenby").Split(',');
-                        foreach(string s in hiding)
+                        foreach (string s in hiding)
                         {
                             tSD.hiddenBy.Add(int.Parse(s));
                         }
@@ -78,6 +79,9 @@ public class Layout : MonoBehaviour
                     break;
                 case "discardpile":
                     discardPile = tSD;
+                    break;
+                case "matchpile":
+                    matchPile = tSD;
                     break;
             }
         }
