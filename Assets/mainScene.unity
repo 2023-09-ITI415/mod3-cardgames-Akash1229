@@ -339,13 +339,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 102900000, guid: 1cd2c68266318724f86c3aff5601effa, type: 3}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 102900000, guid: 01b01cbe4365d4850a5d3ad9efafa7e0, type: 3}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1156,7 +1156,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: change this text
+  m_Text: 'Pyramid
+
+'
 --- !u!222 &1350879169
 CanvasRenderer:
   m_ObjectHideFlags: 0
